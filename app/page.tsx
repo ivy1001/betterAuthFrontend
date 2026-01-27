@@ -1,29 +1,26 @@
 "use client";
 
+import { useEffect } from "react";
 import { authClient } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
 
-  if (isPending) return <p>Loading...</p>;
+  useEffect(() => {
+    if (!isPending) {
+      if (session) {
+        router.push("/dashboard");
+      } else {
+        router.push("/login");
+      }
+    }
+  }, [session, isPending, router]);
 
   return (
-    <div>
-      <h1>Mini App</h1>
-
-      {session ? (
-        <>
-          <p>Logged in as: {session.user?.email}</p>
-          <a href="/dashboard">Dashboard</a>
-          <br />
-          <button onClick={() => authClient.signOut()}>Logout</button>
-        </>
-      ) : (
-        <>
-          <p>Not logged in</p>
-          <a href="/login">Login</a> | <a href="/signup">Signup</a>
-        </>
-      )}
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
     </div>
   );
 }
