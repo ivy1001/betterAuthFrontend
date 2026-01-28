@@ -23,7 +23,13 @@ export default function DashboardPage() {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:3001/secret", {
+      const base = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+      if (!base) {
+        throw new Error("NEXT_PUBLIC_BACKEND_URL is missing");
+      }
+
+      const response = await fetch(`${base}/secret`, {
         credentials: "include",
       });
 
@@ -39,6 +45,7 @@ export default function DashboardPage() {
       setLoading(false);
     }
   };
+
 
   if (isPending) return <p>Loading...</p>;
   if (!session) return null;
