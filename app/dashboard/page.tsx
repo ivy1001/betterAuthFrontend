@@ -23,7 +23,7 @@ export default function DashboardPage() {
     setError(null);
 
     try {
-      const base = process.env.NEXT_PUBLIC_BACKEND_URL;
+      const base = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 
       if (!base) {
         throw new Error("NEXT_PUBLIC_BACKEND_URL is missing");
