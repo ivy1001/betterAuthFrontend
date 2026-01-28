@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BetterAuth Next.js Frontend
 
-## Getting Started
+This frontend is a Next.js application that implements authentication using **Better Auth** and communicates with a protected NestJS backend.
 
-First, run the development server:
+It provides:
+- `/signup` – User registration (email & password)
+- `/login` – User login
+- `/dashboard` – Protected page that fetches a secret message from the backend
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+🚀 **Deployed URL:**  
+https://betterauthfrontend-production.up.railway.app/
+
+---
+
+## Tech Stack
+
+- Next.js (App Router)
+- React
+- better-auth/react
+- Tailwind CSS
+- Cookie-based authentication
+
+---
+
+## Requirements Implemented
+
+### Auth Pages
+- `/signup` uses `authClient.signUp.email()`
+- `/login` uses `authClient.signIn.email()`
+- Errors and loading states handled
+
+### Session State
+- `authClient.useSession()` is used to:
+  - Redirect authenticated users to `/dashboard`
+  - Redirect unauthenticated users to `/login`
+- Logout button is shown only when the user is authenticated
+
+### Dashboard
+- Displays authenticated user email
+- Fetches protected data from backend `/secret` endpoint
+- Fetch includes cookies (`credentials: "include"`)
+
+---
+
+## Environment Variables (Local)
+
+Create `.env.local` in the frontend root:
+
+```env
+NEXT_PUBLIC_BACKEND_URL=http://localhost:3001
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Restart the dev server after setting env variables.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Install & Run Locally
 
-## Learn More
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Frontend runs on:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- http://localhost:3000
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Backend must be running on:
 
-## Deploy on Vercel
+- http://localhost:3001
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Local Testing Flow
+
+1. Start backend (`npm run start:dev`)
+2. Start frontend (`npm run dev`)
+3. Open http://localhost:3000/signup
+4. Create a new account
+5. User is redirected to `/dashboard`
+6. Click "Reveal Secret"
+7. Secret message is fetched from the backend
+
+---
+
+## Production Deployment (Railway)
+
+Frontend is deployed on Railway:
+
+- https://betterauthfrontend-production.up.railway.app/
+
+### Important Note About Cookies
+
+Browsers restrict cookies across different domains.
+
+To avoid cross-domain cookie issues:
+- The frontend proxies API requests through its own domain
+- Backend requests appear as same-origin to the browser
+- Default `SameSite=Lax` cookies work without modification
+
+This ensures reliable session handling in production.
+
+---
+
+## More Infos
+
+- The frontend does **not** handle authentication logic directly
+- All authentication flows are handled by Better Auth
+- Sessions are managed via secure HTTP-only cookies
+- The frontend only reacts to session state and renders UI accordingly
